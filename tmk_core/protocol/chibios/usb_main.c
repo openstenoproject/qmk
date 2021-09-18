@@ -313,6 +313,9 @@ typedef struct {
 #ifdef RAW_ENABLE
             usb_driver_config_t raw_driver;
 #endif
+#ifdef PLOVER_ENABLE
+            usb_driver_config_t plover_driver;
+#endif
 #ifdef MIDI_ENABLE
             usb_driver_config_t midi_driver;
 #endif
@@ -348,6 +351,12 @@ static usb_driver_configs_t drivers = {
 #    define RAW_IN_MODE USB_EP_MODE_TYPE_INTR
 #    define RAW_OUT_MODE USB_EP_MODE_TYPE_INTR
     .raw_driver = QMK_USB_DRIVER_CONFIG(RAW, 0, false),
+#endif
+
+#ifdef PLOVER_ENABLE
+#    define PLOVER_IN_CAPACITY 4
+#    define PLOVER_IN_MODE USB_EP_MODE_TYPE_INTR
+    .plover_driver = QMK_USB_DRIVER_CONFIG(PLOVER, 0, false),
 #endif
 
 #ifdef MIDI_ENABLE

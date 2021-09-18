@@ -322,6 +322,29 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM RawReport[] = {
 };
 #endif
 
+#ifdef PLOVER_ENABLE
+const USB_Descriptor_HIDReport_Datatype_t PROGMEM PloverReport[] = {
+    0x06, 0x50, 0xff,              // UsagePage (65360)
+    0x0a, 0x56, 0x4c,              // Usage (19542)
+    0xa1, 0x02,                    // Collection (Logical)
+    0x85, 0x01,                    //     ReportID (1)
+    0x25, 0x01,                    //     LogicalMaximum (1)
+    0x75, 0x01,                    //     ReportSize (1)
+    0x95, 0x40,                    //     ReportCount (64)
+    0x05, 0x09,                    //     UsagePage (button)
+    0x19, 0x00,                    //     UsageMinimum (Button(0))
+    0x29, 0x3f,                    //     UsageMaximum (Button(63))
+    0x81, 0x02,                    //     Input (Variable)
+    0x85, 0x02,                    //     ReportID (2)
+    0x26, 0xff, 0x00,              //     LogicalMaximum (255)
+    0x75, 0x08,                    //     ReportSize (8)
+    0x19, 0x00,                    //     UsageMinimum (Button(0))
+    0x29, 0x3f,                    //     UsageMaximum (Button(63))
+    0x81, 0x02,                    //     Input (Variable)
+    0xc0,                          // EndCollection
+};
+#endif
+
 #ifdef CONSOLE_ENABLE
 const USB_Descriptor_HIDReport_Datatype_t PROGMEM ConsoleReport[] = {
     HID_RI_USAGE_PAGE(16, 0xFF31), // Vendor Defined (PJRC Teensy compatible)
@@ -548,6 +571,46 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
             .Type               = DTYPE_Endpoint
         },
         .EndpointAddress        = (ENDPOINT_DIR_OUT | RAW_OUT_EPNUM),
+        .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
+        .EndpointSize           = RAW_EPSIZE,
+        .PollingIntervalMS      = 0x01
+    },
+#endif
+
+#ifdef PLOVER_ENABLE
+    /*
+     * Plover HID
+     */
+    .Plover_Interface = {
+        .Header = {
+            .Size               = sizeof(USB_Descriptor_Interface_t),
+            .Type               = DTYPE_Interface
+        },
+        .InterfaceNumber        = PLOVER_INTERFACE,
+        .AlternateSetting       = 0x00,
+        .TotalEndpoints         = 1,
+        .Class                  = HID_CSCP_HIDClass,
+        .SubClass               = HID_CSCP_NonBootSubclass,
+        .Protocol               = HID_CSCP_NonBootProtocol,
+        .InterfaceStrIndex      = NO_DESCRIPTOR
+    },
+    .Plover_HID = {
+        .Header = {
+            .Size               = sizeof(USB_HID_Descriptor_HID_t),
+            .Type               = HID_DTYPE_HID
+        },
+        .HIDSpec                = VERSION_BCD(1, 1, 1),
+        .CountryCode            = 0x00,
+        .TotalReportDescriptors = 1,
+        .HIDReportType          = HID_DTYPE_Report,
+        .HIDReportLength        = sizeof(PloverReport)
+    },
+    .Plover_INEndpoint = {
+        .Header = {
+            .Size               = sizeof(USB_Descriptor_Endpoint_t),
+            .Type               = DTYPE_Endpoint
+        },
+        .EndpointAddress        = (ENDPOINT_DIR_IN | PLOVER_IN_EPNUM),
         .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
         .EndpointSize           = RAW_EPSIZE,
         .PollingIntervalMS      = 0x01
@@ -1148,6 +1211,14 @@ uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const 
                     break;
 #endif
 
+#ifdef PLOVER_ENABLE
+                case PLOVER_INTERFACE:
+                    Address = &ConfigurationDescriptor.Plover_HID;
+                    Size    = sizeof(USB_HID_Descriptor_HID_t);
+
+                    break;
+#endif
+
 #ifdef CONSOLE_ENABLE
                 case CONSOLE_INTERFACE:
                     Address = &ConfigurationDescriptor.Console_HID;
@@ -1201,6 +1272,14 @@ uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const 
                 case RAW_INTERFACE:
                     Address = &RawReport;
                     Size    = sizeof(RawReport);
+
+                    break;
+#endif
+
+#ifdef PLOVER_ENABLE
+                case PLOVER_INTERFACE:
+                    Address = &PloverReport;
+                    Size    = sizeof(PloverReport);
 
                     break;
 #endif

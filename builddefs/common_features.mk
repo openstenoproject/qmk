@@ -92,9 +92,9 @@ ifeq ($(MUSIC_ENABLE), yes)
     SRC += $(QUANTUM_DIR)/process_keycode/process_music.c
 endif
 
-ifeq ($(strip $(PLOVER_ENABLE)), yes)
-    OPT_DEFS += -DPLOVER_ENABLE
-    SRC += $(QUANTUM_DIR)/process_keycode/process_plover.c
+ifeq ($(strip $(PLOVER_HID_ENABLE)), yes)
+    OPT_DEFS += -DPLOVER_HID_ENABLE
+    SRC += $(QUANTUM_DIR)/process_keycode/process_plover_hid.c
 endif
 
 ifeq ($(strip $(STENO_ENABLE)), yes)

@@ -86,6 +86,10 @@ extern keymap_config_t keymap_config;
 #    include "raw_hid.h"
 #endif
 
+#ifdef PLOVER_HID_ENABLE
+#    include "plover_hid.h"
+#endif
+
 #ifdef JOYSTICK_ENABLE
 #    include "joystick.h"
 #endif
@@ -206,6 +210,28 @@ static void raw_hid_task(void) {
             raw_hid_receive(data, sizeof(data));
         }
     }
+}
+#endif
+
+#ifdef PLOVER_HID_ENABLE
+void plover_hid_send(uint8_t data[PLOVER_HID_SIMPLE_REPORT_SIZE]) {
+    if (USB_DeviceState != DEVICE_STATE_Configured) {
+        return;
+    }
+
+    uint8_t ep = Endpoint_GetCurrentEndpoint();
+
+    Endpoint_SelectEndpoint(PLOVER_HID_IN_EPNUM);
+
+    // Check to see if the host is ready to accept another packet
+    if (Endpoint_IsINReady()) {
+        // Write data
+        Endpoint_Write_Stream_LE(data, PLOVER_HID_SIMPLE_REPORT_SIZE, NULL);
+        // Finalize The stream transfer to send the last packet
+        Endpoint_ClearIN();
+    }
+
+    Endpoint_SelectEndpoint(ep);
 }
 #endif
 
@@ -471,9 +497,9 @@ void EVENT_USB_Device_ConfigurationChanged(void) {
     ConfigSuccess &= Endpoint_ConfigureEndpoint((RAW_OUT_EPNUM | ENDPOINT_DIR_OUT), EP_TYPE_INTERRUPT, RAW_EPSIZE, 1);
 #endif
 
-#ifdef PLOVER_ENABLE
+#ifdef PLOVER_HID_ENABLE
     /* Setup raw HID endpoints */
-    ConfigSuccess &= Endpoint_ConfigureEndpoint((PLOVER_IN_EPNUM | ENDPOINT_DIR_IN), EP_TYPE_INTERRUPT, PLOVER_EPSIZE, 1);
+    ConfigSuccess &= Endpoint_ConfigureEndpoint((PLOVER_HID_IN_EPNUM | ENDPOINT_DIR_IN), EP_TYPE_INTERRUPT, PLOVER_HID_EPSIZE, 1);
 #endif
 
 #ifdef CONSOLE_ENABLE

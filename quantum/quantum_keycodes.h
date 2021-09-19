@@ -65,6 +65,8 @@ enum quantum_keycodes {
     QK_STENO_COMB           = 0x5A32,
     QK_STENO_COMB_MAX       = 0x5A3C,
     QK_STENO_MAX            = 0x5A3F,
+    QK_PLOVER_HID           = 0x5A40,
+    QK_PLOVER_HID_MAX       = 0x5A80,
     // 0x5C00 - 0x5FFF are reserved, see below
     QK_MOD_TAP             = 0x6000,
     QK_MOD_TAP_MAX         = 0x7FFF,

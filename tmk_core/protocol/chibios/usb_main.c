@@ -313,8 +313,8 @@ typedef struct {
 #ifdef RAW_ENABLE
             usb_driver_config_t raw_driver;
 #endif
-#ifdef PLOVER_ENABLE
-            usb_driver_config_t plover_driver;
+#ifdef PLOVER_HID_ENABLE
+            usb_driver_config_t plover_hid_driver;
 #endif
 #ifdef MIDI_ENABLE
             usb_driver_config_t midi_driver;
@@ -353,10 +353,10 @@ static usb_driver_configs_t drivers = {
     .raw_driver = QMK_USB_DRIVER_CONFIG(RAW, 0, false),
 #endif
 
-#ifdef PLOVER_ENABLE
-#    define PLOVER_IN_CAPACITY 4
-#    define PLOVER_IN_MODE USB_EP_MODE_TYPE_INTR
-    .plover_driver = QMK_USB_DRIVER_CONFIG(PLOVER, 0, false),
+#ifdef PLOVER_HID_ENABLE
+#    define PLOVER_HID_IN_CAPACITY 4
+#    define PLOVER_HID_IN_MODE USB_EP_MODE_TYPE_INTR
+    .plover_hid_driver = QMK_USB_DRIVER_CONFIG(PLOVER_HID, 0, false),
 #endif
 
 #ifdef MIDI_ENABLE
@@ -1095,6 +1095,12 @@ void console_task(void) {
 }
 
 #endif /* CONSOLE_ENABLE */
+
+#ifdef PLOVER_HID_ENABLE
+void plover_hid_send(uint8_t data[PLOVER_HID_SIMPLE_REPORT_SIZE]) {
+    chnWrite(&drivers.plover_hid_driver.driver, data, PLOVER_HID_SIMPLE_REPORT_SIZE);
+}
+#endif
 
 #ifdef RAW_ENABLE
 void raw_hid_send(uint8_t *data, uint8_t length) {

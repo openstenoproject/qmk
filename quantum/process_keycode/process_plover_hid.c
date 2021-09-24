@@ -6,6 +6,6 @@ bool process_plover_hid(uint16_t keycode, keyrecord_t *record) {
     if (keycode < PLV__MIN || keycode > PLV__MAX) {
         return true;
     }
-    plover_hid_update((uint8_t)(keycode - PLV__MIN), record->event.pressed);
+    plover_hid_update(keycode - PLV__MIN, record->event.pressed);
     return false;
 }

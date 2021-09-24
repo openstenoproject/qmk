@@ -214,17 +214,22 @@ static void raw_hid_task(void) {
 #endif
 
 #ifdef PLOVER_HID_ENABLE
-static uint8_t plover_hid_current_report[PLOVER_HID_SIMPLE_REPORT_SIZE] = {1};
+static bool plover_hid_report_updated = false;
+static uint8_t plover_hid_current_report[PLOVER_HID_SIMPLE_REPORT_SIZE] = {1, 0};
 void plover_hid_update(uint8_t button, bool pressed) {
     if (pressed) {
         plover_hid_current_report[1 + button/8] |= (1 << (7 - (button % 8)));
     } else {
-        plover_hid_current_report[1 + button/8] &= (1 << (7 - (button % 8)));
+        plover_hid_current_report[1 + button/8] &= ~(1 << (7 - (button % 8)));
     }
+    plover_hid_report_updated = true;
 }
 
 void plover_hid_task(void) {
     if (USB_DeviceState != DEVICE_STATE_Configured) {
+        return;
+    }
+    if (!plover_hid_report_updated) {
         return;
     }
 
@@ -235,12 +240,14 @@ void plover_hid_task(void) {
     // Check to see if the host is ready to accept another packet
     if (Endpoint_IsINReady()) {
         // Write data
-        Endpoint_Write_Stream_LE(plover_hid_current_report, sizeof(plover_hid_current_report), NULL);
+        Endpoint_Write_Stream_LE(plover_hid_current_report, PLOVER_HID_SIMPLE_REPORT_SIZE, NULL);
         // Finalize The stream transfer to send the last packet
         Endpoint_ClearIN();
     }
 
     Endpoint_SelectEndpoint(ep);
+
+    plover_hid_report_updated = false;
 }
 #endif
 

@@ -318,7 +318,7 @@ enum usb_endpoints {
 #define SHARED_EPSIZE 32
 #define MOUSE_EPSIZE 8
 #define RAW_EPSIZE 32
-#define PLOVER_HID_EPSIZE 9
+#define PLOVER_HID_EPSIZE 8
 #define CONSOLE_EPSIZE 32
 #define MIDI_STREAM_EPSIZE 64
 #define CDC_NOTIFICATION_EPSIZE 8

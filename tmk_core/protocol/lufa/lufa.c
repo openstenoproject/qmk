@@ -215,12 +215,12 @@ static void raw_hid_task(void) {
 
 #ifdef PLOVER_HID_ENABLE
 static bool plover_hid_report_updated = false;
-static uint8_t plover_hid_current_report[PLOVER_HID_SIMPLE_REPORT_SIZE] = {1, 0};
+static uint8_t plover_hid_current_report[PLOVER_HID_EPSIZE] = {0};
 void plover_hid_update(uint8_t button, bool pressed) {
     if (pressed) {
-        plover_hid_current_report[1 + button/8] |= (1 << (7 - (button % 8)));
+        plover_hid_current_report[button/8] |= (1 << (7 - (button % 8)));
     } else {
-        plover_hid_current_report[1 + button/8] &= ~(1 << (7 - (button % 8)));
+        plover_hid_current_report[button/8] &= ~(1 << (7 - (button % 8)));
     }
     plover_hid_report_updated = true;
 }
@@ -239,7 +239,7 @@ void plover_hid_task(void) {
 
     if (Endpoint_IsINReady()) {
         // Write data
-        Endpoint_Write_Stream_LE(plover_hid_current_report, PLOVER_HID_SIMPLE_REPORT_SIZE, NULL);
+        Endpoint_Write_Stream_LE(plover_hid_current_report, PLOVER_HID_EPSIZE, NULL);
         // Finalize The stream transfer to send the last packet
         Endpoint_ClearIN();
         plover_hid_report_updated = false;

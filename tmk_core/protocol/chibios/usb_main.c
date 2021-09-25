@@ -355,7 +355,9 @@ static usb_driver_configs_t drivers = {
 
 #ifdef PLOVER_HID_ENABLE
 #    define PLOVER_HID_IN_CAPACITY 4
+#    define PLOVER_HID_OUT_CAPACITY 4
 #    define PLOVER_HID_IN_MODE USB_EP_MODE_TYPE_INTR
+#    define PLOVER_HID_OUT_MODE USB_EP_MODE_TYPE_INTR
     .plover_hid_driver = QMK_USB_DRIVER_CONFIG(PLOVER_HID, 0, false),
 #endif
 
@@ -1097,8 +1099,22 @@ void console_task(void) {
 #endif /* CONSOLE_ENABLE */
 
 #ifdef PLOVER_HID_ENABLE
-void plover_hid_send(uint8_t data[PLOVER_HID_SIMPLE_REPORT_SIZE]) {
-    chnWrite(&drivers.plover_hid_driver.driver, data, PLOVER_HID_SIMPLE_REPORT_SIZE);
+static bool plover_hid_report_updated = false;
+static uint8_t plover_hid_current_report[PLOVER_HID_EPSIZE] = {0};
+void plover_hid_update(uint8_t button, bool pressed) {
+    if (pressed) {
+        plover_hid_current_report[button/8] |= (1 << (7 - (button % 8)));
+    } else {
+        plover_hid_current_report[button/8] &= ~(1 << (7 - (button % 8)));
+    }
+    plover_hid_report_updated = true;
+}
+
+void plover_hid_task(void) {
+    if (plover_hid_report_updated) {
+        chnWrite(&drivers.plover_hid_driver.driver, plover_hid_current_report, PLOVER_HID_EPSIZE);
+        plover_hid_report_updated = false;
+    }
 }
 #endif
 

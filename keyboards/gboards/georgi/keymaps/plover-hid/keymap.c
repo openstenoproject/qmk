@@ -42,9 +42,9 @@
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Main layer, everything goes through here
     [0] = LAYOUT_georgi(
-    PLV_X1,  PLV_S1,  PLV_TL,  PLV_PL,  PLV_HL,  PLV_ST1,       PLV_ST3, PLV_FR,  PLV_PR,  PLV_LR,  PLV_TR,  PLV_DR,
-    PLV_X2,  PLV_S2,  PLV_KL,  PLV_WL,  PLV_RL,  PLV_ST2,       PLV_ST4, PLV_RR,  PLV_BR,  PLV_GR,  PLV_SR,  PLV_ZR,
-                               PLV_N1,  PLV_A,     PLV_O,         PLV_E,  PLV_U,  PLV_N7
+    PLV_X1,  PLV_SL,  PLV_TL,  PLV_PL,  PLV_HL,  PLV_STR,       PLV_STR, PLV_FR,  PLV_PR,  PLV_LR,  PLV_TR,  PLV_DR,
+    PLV_X2,  PLV_SL,  PLV_KL,  PLV_WL,  PLV_RL,  PLV_STR,       PLV_STR, PLV_RR,  PLV_BR,  PLV_GR,  PLV_SR,  PLV_ZR,
+                              PLV_NUM,  PLV_A,     PLV_O,         PLV_E,  PLV_U, PLV_NUM
     )
 };
 // Don't fuck with this, thanks.

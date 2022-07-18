@@ -16,5 +16,5 @@ documentation for more information on QMK itself.
 - Georgi (`gboards/georgi`): [source](https://github.com/openstenoproject/qmk/tree/main/keyboards/gboards/georgi)
 - Splitography (`splitography`): [source](https://github.com/openstenoproject/qmk/tree/main/keyboards/splitography)
 - The Uni (`the_uni/pro_micro` for v2, `the_uni/usb_c` for v3): [source](https://github.com/openstenoproject/qmk/tree/main/keyboards/the_uni), [binary](https://github.com/petercpark/stenokeyboards-firmware)
-- Ecosteno: [binary](https://github.com/nkotech/EcoSteno-Firmware/tree/main/keyboards/noll)
+- Ecosteno (`noll/ecosteno`): [source](https://github.com/openstenoproject/qmk/tree/main/keyboards/noll/ecosteno), [binary](https://github.com/nkotech/EcoSteno-Firmware/tree/main/keyboards/noll)
 - Multisteno: [binary](https://github.com/nkotech/EcoSteno-Firmware/tree/main/keyboards/noll)

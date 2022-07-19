@@ -633,6 +633,10 @@ void keyboard_task(void) {
     ps2_mouse_task();
 #endif
 
+#if defined(STENO_ENABLE) && defined(STENO_REPEAT)
+    steno_task();
+#endif
+
 #ifdef POINTING_DEVICE_ENABLE
     pointing_device_task();
 #endif

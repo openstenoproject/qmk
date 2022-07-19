@@ -13,8 +13,11 @@ documentation for more information on QMK itself.
 
 ## Keyboards Supported
 
-- Georgi (`gboards/georgi`): [source](https://github.com/openstenoproject/qmk/tree/main/keyboards/gboards/georgi)
-- Splitography (`splitography`): [source](https://github.com/openstenoproject/qmk/tree/main/keyboards/splitography)
-- The Uni (`the_uni/pro_micro` for v2, `the_uni/usb_c` for v3): [source](https://github.com/openstenoproject/qmk/tree/main/keyboards/the_uni), [binary](https://github.com/petercpark/stenokeyboards-firmware)
-- Ecosteno (`noll/ecosteno`): [source](https://github.com/openstenoproject/qmk/tree/main/keyboards/noll/ecosteno), [binary](https://github.com/nkotech/EcoSteno-Firmware/tree/main/keyboards/noll)
-- Multisteno: [binary](https://github.com/nkotech/EcoSteno-Firmware/tree/main/keyboards/noll)
+| Keyboard     | Source                                                                                               | Binaries                                                                             |
+| ------------ | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Georgi       | [`gboards/georgi`](https://github.com/openstenoproject/qmk/tree/main/keyboards/gboards/georgi)       |                                                                                      |
+| Splitography | [`splitography`](https://github.com/openstenoproject/qmk/tree/main/keyboards/splitography)           |                                                                                      |
+| The Uni (v2) | [`the_uni/pro_micro`](https://github.com/openstenoproject/qmk/tree/main/keyboards/the_uni/pro_micro) | [StenoKeyboards](https://github.com/petercpark/stenokeyboards-firmware)              |
+| The Uni (v3) | [`the_uni/usb_c`](https://github.com/openstenoproject/qmk/tree/main/keyboards/the_uni/usb_c)         | [StenoKeyboards](https://github.com/petercpark/stenokeyboards-firmware)              |
+| Ecosteno     | [`noll/ecosteno`](https://github.com/openstenoproject/qmk/tree/main/keyboards/noll/ecosteno)         | [Nolltronics](https://github.com/nkotech/EcoSteno-Firmware/tree/main/keyboards/noll) |
+| Multisteno   |                                                                                                      | [Nolltronics](https://github.com/nkotech/EcoSteno-Firmware/tree/main/keyboards/noll) |

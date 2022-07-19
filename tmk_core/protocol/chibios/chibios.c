@@ -74,6 +74,10 @@ void virtser_task(void);
 void raw_hid_task(void);
 #endif
 
+#ifdef PLOVER_HID_ENABLE
+void plover_hid_task(void);
+#endif
+
 #ifdef CONSOLE_ENABLE
 void console_task(void);
 #endif
@@ -217,5 +221,8 @@ void protocol_post_task(void) {
 #endif
 #ifdef RAW_ENABLE
     raw_hid_task();
+#endif
+#ifdef PLOVER_HID_ENABLE
+    plover_hid_task();
 #endif
 }

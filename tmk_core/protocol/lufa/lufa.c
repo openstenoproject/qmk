@@ -86,6 +86,10 @@ extern keymap_config_t keymap_config;
 #    include "raw_hid.h"
 #endif
 
+#ifdef PLOVER_HID_ENABLE
+#    include "plover_hid.h"
+#endif
+
 #ifdef JOYSTICK_ENABLE
 #    include "joystick.h"
 #endif
@@ -206,6 +210,43 @@ static void raw_hid_task(void) {
             raw_hid_receive(data, sizeof(data));
         }
     }
+}
+#endif
+
+#ifdef PLOVER_HID_ENABLE
+static bool plover_hid_report_updated = false;
+static uint8_t plover_hid_current_report[PLOVER_HID_EPSIZE] = {0x50};
+void plover_hid_update(uint8_t button, bool pressed) {
+    if (pressed) {
+        plover_hid_current_report[1 + button/8] |= (1 << (7 - (button % 8)));
+    } else {
+        plover_hid_current_report[1 + button/8] &= ~(1 << (7 - (button % 8)));
+    }
+    plover_hid_report_updated = true;
+}
+
+void plover_hid_task(void) {
+    if (USB_DeviceState != DEVICE_STATE_Configured) {
+        return;
+    }
+    if (!plover_hid_report_updated) {
+        return;
+    }
+
+    uint8_t ep = Endpoint_GetCurrentEndpoint();
+
+    Endpoint_SelectEndpoint(PLOVER_HID_IN_EPNUM);
+
+    if (Endpoint_IsINReady()) {
+        // Write data
+        Endpoint_Write_Stream_LE(plover_hid_current_report, sizeof(plover_hid_current_report), NULL);
+        // Finalize The stream transfer to send the last packet
+        Endpoint_ClearIN();
+        plover_hid_report_updated = false;
+    }
+
+    Endpoint_SelectEndpoint(ep);
+
 }
 #endif
 
@@ -436,6 +477,7 @@ void EVENT_USB_Device_StartOfFrame(void) {
     if (!console_flush) return;
     Console_Task();
     console_flush = false;
+
 }
 
 #endif
@@ -469,6 +511,11 @@ void EVENT_USB_Device_ConfigurationChanged(void) {
     /* Setup raw HID endpoints */
     ConfigSuccess &= Endpoint_ConfigureEndpoint((RAW_IN_EPNUM | ENDPOINT_DIR_IN), EP_TYPE_INTERRUPT, RAW_EPSIZE, 1);
     ConfigSuccess &= Endpoint_ConfigureEndpoint((RAW_OUT_EPNUM | ENDPOINT_DIR_OUT), EP_TYPE_INTERRUPT, RAW_EPSIZE, 1);
+#endif
+
+#ifdef PLOVER_HID_ENABLE
+    /* Setup Plover HID endpoint */
+    ConfigSuccess &= Endpoint_ConfigureEndpoint((PLOVER_HID_IN_EPNUM | ENDPOINT_DIR_IN), EP_TYPE_INTERRUPT, PLOVER_HID_EPSIZE, 1);
 #endif
 
 #ifdef CONSOLE_ENABLE
@@ -1094,6 +1141,10 @@ void protocol_post_task(void) {
 
 #ifdef RAW_ENABLE
     raw_hid_task();
+#endif
+
+#ifdef PLOVER_HID_ENABLE
+    plover_hid_task();
 #endif
 
 #if !defined(INTERRUPT_CONTROL_ENDPOINT)
